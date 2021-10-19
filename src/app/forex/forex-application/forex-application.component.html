@@ -1,0 +1,26 @@
+<div class="col-10 col-offset-1 container">
+    <div class="col-12 grid">
+        <div class="col-8">
+            <h1>Forex Exchange</h1>
+            <h3>Checkout the current price on different exchanges for a currency pair</h3>
+        </div>
+    </div>
+    <div class="col-12 grid">
+        <div class="col-3 formgrid">
+            <div class="col">
+                <h5>Exchange</h5>
+                <p-dropdown [options]="exchanges" [(ngModel)]="selectedExchange" placeholder="Select exchanges"
+                    optionLabel="name" [showClear]="true"></p-dropdown>
+            </div>
+            <div class="col">
+                <h5>Symbol</h5>
+                <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbols"
+                    optionLabel="char" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="col-9 grid">
+            <div class="currency-flag currency-flag-usd"></div>
+            <div class="currency-flag currency-flag-eur"></div>
+        </div>
+    </div>
+</div>
