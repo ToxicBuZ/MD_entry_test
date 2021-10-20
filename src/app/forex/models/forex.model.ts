@@ -1,9 +1,13 @@
 export class Exchange {
     name?: string;
-    code?: string;
- }
+}
 
- export class Symbol {
-     char?: string;
-     code?: string;
- }
+export class Symbol {
+    description?: string;
+    displaySymbol?: string;
+    symbol?: string;
+}
+
+export class SelectedSymbol {
+    displaySymbol?: string;
+}

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Exchange, Symbol } from '../models/forex.model';
+import { Subscription } from 'rxjs';
+import { Exchange, SelectedSymbol, Symbol } from '../models/forex.model';
+import { ForexService } from '../services/forex.service';
 
 @Component({
   selector: 'app-forex-application',
@@ -9,34 +11,61 @@ import { Exchange, Symbol } from '../models/forex.model';
 
 export class ForexApplicationComponent implements OnInit {
 
+  public subscription: Subscription = new Subscription();
+  public data: any;
+  public options: any;
   public exchanges: Exchange[] = [];
   public symbols: Symbol[] = [];
-  public selectedExchange = Exchange;
-  public selectedSymbol = Symbol;
+  public selectedExchange = '';
+  public selectedSymbol: SelectedSymbol = {};
 
-
-  constructor() {
-
-    this.exchanges = [
-      { name: 'exchange1', code: 'ex1' },
-      { name: 'exchange2', code: 'ex2' },
-      { name: 'exchange3', code: 'ex3' },
-      { name: 'exchange4', code: 'ex4' },
-      { name: 'exchange5', code: 'ex5' }
-    ];
-
-    this.symbols = [
-      { char: '$', code: 'sy1' },
-      { char: '#', code: 'sy2' },
-      { char: '%', code: 'sy3' },
-      { char: '^', code: 'sy4' },
-      { char: '&', code: 'sy5' }
-    ];
-
-  }
+  constructor(
+    private forexService: ForexService
+  ) { }
 
   ngOnInit(): void {
-    
+    this.updateChart();
+    this.subscription.add(this.forexService.getAllExchanges().subscribe((exchanges) => {
+      this.exchanges = exchanges.map(exchange => ({ name: exchange }));
+    }))
   }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  public getSymbols(exchange: string) {
+    if (exchange) {
+      this.forexService.getSymbolsForExchange(exchange).subscribe(symbols => {
+        this.symbols = symbols.map(symbol => ({ displaySymbol: symbol.displaySymbol }));
+      })
+    }
+  }
+
+  public updateChart(): void {
+    this.data = {
+      labels: ['15M', '1H', '1D', '1W', '1M'],
+      datasets: [
+        {
+          label: this.selectedSymbol.displaySymbol ?? '',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }
+      ]
+    };
+    this.options = {
+      title: {
+        display: true,
+        text: 'My Title',
+        fontSize: 16
+      },
+      legend: {
+        position: 'bottom'
+      }
+    };
+  }
+
 
 }

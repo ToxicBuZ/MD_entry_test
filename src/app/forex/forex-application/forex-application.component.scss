@@ -1,9 +1,11 @@
-.container {
-  background-color: gray;
+:host ::ng-deep .p-button {
+    display: block;
+    width: 100%;
 }
 
-
-
+.secondary {
+  color: gray;
+}
 .currency-flag {
     display: inline-block;
     width: 24px;

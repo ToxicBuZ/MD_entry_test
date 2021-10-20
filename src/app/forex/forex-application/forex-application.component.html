@@ -1,26 +1,73 @@
-<div class="col-10 col-offset-1 container">
+<div class="col-10 col-offset-1">
     <div class="col-12 grid">
         <div class="col-8">
             <h1>Forex Exchange</h1>
-            <h3>Checkout the current price on different exchanges for a currency pair</h3>
+            <h3 class="secondary">Checkout the current price on different exchanges for a currency pair</h3>
         </div>
     </div>
     <div class="col-12 grid">
-        <div class="col-3 formgrid">
+        <div class="col-4 xs:col:12 sm:col-12 md:col-12 lg:col-4 xl:col-4 formgrid">
             <div class="col">
                 <h5>Exchange</h5>
                 <p-dropdown [options]="exchanges" [(ngModel)]="selectedExchange" placeholder="Select exchanges"
-                    optionLabel="name" [showClear]="true"></p-dropdown>
+                    (onChange)="getSymbols($event.value?.name); updateChart()" optionLabel="name" [showClear]="true">
+                </p-dropdown>
             </div>
             <div class="col">
                 <h5>Symbol</h5>
                 <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbols"
-                    optionLabel="char" [showClear]="true"></p-dropdown>
+                    (onChange)="updateChart()" optionLabel="displaySymbol" [showClear]="true"></p-dropdown>
             </div>
         </div>
-        <div class="col-9 grid">
-            <div class="currency-flag currency-flag-usd"></div>
-            <div class="currency-flag currency-flag-eur"></div>
+        <div class="col-8 xs:col:12 sm:col-12 md:col-12 lg:col-8 xl:col-8">
+            <div class="col-12 grid">
+                <div class="col-4 formgrid">
+                    <div class="col grid">
+                        <div class="col-3 pr-3">
+                            <div class="currency-flag currency-flag-xl currency-flag-usd"></div>
+                        </div>
+                        <div class="col-3 pr-3">
+                            <div class="currency-flag currency-flag-xl currency-flag-eur"></div>
+                        </div>
+                    </div>
+                    <div class="col grid">
+                        <h3>EXCHANGE</h3>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+                <div class="col-4 formgrid">
+                    <div class="col grid justify-content-end">
+                        <h3>CURRENT PRICE</h3>
+                    </div>
+                    <div class="col grid justify-content-end">
+                        <h3>PRICE DIFFERENCE</h3>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12">
+                <p-chart type="line" [data]="data" [options]="options" style="width:fit-content;"></p-chart>
+            </div>
+            <div class="col-12 grid">
+                <div class="col-1"></div>
+                <div class="col-2">
+                    <button pButton pRipple type="button" label="15M"
+                        class="p-button-rounded p-button-success"></button>
+                </div>
+                <div class="col-2">
+                    <button pButton pRipple type="button" label="1H" class="p-button-rounded p-button-success"></button>
+                </div>
+                <div class="col-2">
+                    <button pButton pRipple type="button" label="1D" class="p-button-rounded p-button-success"></button>
+                </div>
+                <div class="col-2">
+                    <button pButton pRipple type="button" label="1W" class="p-button-rounded p-button-success"></button>
+                </div>
+                <div class="col-2">
+                    <button pButton pRipple type="button" label="1M" class="p-button-rounded p-button-success"></button>
+                </div>
+                <div class="col-1"></div>
+            </div>
         </div>
     </div>
 </div>

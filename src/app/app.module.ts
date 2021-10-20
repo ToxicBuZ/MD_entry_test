@@ -6,10 +6,9 @@ import { AppComponent } from './app.component';
 import { ForexApplicationComponent } from './forex/forex-application/forex-application.component';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-
-
-
-
+import { ChartModule } from 'primeng/chart';
+import { ButtonModule } from 'primeng/button';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,13 @@ import { DropdownModule } from 'primeng/dropdown';
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    DropdownModule
+    DropdownModule,
+    ChartModule,
+    ButtonModule,
+    HttpClientModule
+  ],
+  exports: [
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
