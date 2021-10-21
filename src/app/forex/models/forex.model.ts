@@ -8,6 +8,12 @@ export class Symbol {
     symbol?: string;
 }
 
-export class SelectedSymbol {
-    displaySymbol?: string;
+export class Candle {
+    c?: Number[];
+    h?: Number[];
+    l?: Number[];
+    o?: Number[];
+    s?: string;
+    t?: Number[];
+    v?: Number[];
 }

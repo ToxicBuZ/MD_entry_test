@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Exchange, SelectedSymbol, Symbol } from '../models/forex.model';
+import { Exchange, Symbol } from '../models/forex.model';
 import { ForexService } from '../services/forex.service';
 
 @Component({
@@ -11,17 +11,23 @@ import { ForexService } from '../services/forex.service';
 
 export class ForexApplicationComponent implements OnInit {
 
-  public subscription: Subscription = new Subscription();
+  public subscription: Subscription;
   public data: any;
   public options: any;
-  public exchanges: Exchange[] = [];
-  public symbols: Symbol[] = [];
+  public exchanges: Exchange[];
+  public symbols: Symbol[];
   public selectedExchange = '';
-  public selectedSymbol: SelectedSymbol = {};
+  public selectedSymbol: Symbol = {};
+  public closedPrices: any;
 
   constructor(
     private forexService: ForexService
-  ) { }
+  ) {
+    this.subscription = new Subscription();
+    this.exchanges = [];
+    this.symbols = [];
+    this.closedPrices = [];
+  }
 
   ngOnInit(): void {
     this.updateChart();
@@ -34,21 +40,30 @@ export class ForexApplicationComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  public getSymbols(exchange: string) {
+  public getSymbols(exchange: string): void {
     if (exchange) {
       this.forexService.getSymbolsForExchange(exchange).subscribe(symbols => {
-        this.symbols = symbols.map(symbol => ({ displaySymbol: symbol.displaySymbol }));
+        this.symbols = [...symbols];
       })
     }
   }
 
+  public getCandle(resolution: string, timeframe: number): void {
+    this.forexService.getTheCandle(this.selectedSymbol, resolution, timeframe).subscribe(candle => {
+      this.closedPrices = candle.c;
+      this.updateChart();
+    })
+  }
+
   public updateChart(): void {
     this.data = {
-      labels: ['15M', '1H', '1D', '1W', '1M'],
+      labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+        '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+        '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
       datasets: [
         {
           label: this.selectedSymbol.displaySymbol ?? '',
-          data: [65, 59, 80, 81, 56, 55, 40],
+          data: this.closedPrices,
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
           tension: 0.1

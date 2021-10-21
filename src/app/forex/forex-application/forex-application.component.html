@@ -42,7 +42,6 @@
                     <div class="col grid justify-content-end">
                         <h3>PRICE DIFFERENCE</h3>
                     </div>
-
                 </div>
             </div>
             <div class="col-12">
@@ -51,20 +50,24 @@
             <div class="col-12 grid">
                 <div class="col-1"></div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="15M"
+                    <button pButton pRipple type="button" label="15M" (click)="getCandle('1', 15*60 )"
                         class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1H" class="p-button-rounded p-button-success"></button>
+                    <button pButton pRipple type="button" label="1H" (click)="getCandle('1', 60*60 )"
+                        class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1D" class="p-button-rounded p-button-success"></button>
+                    <button pButton pRipple type="button" label="1D" (click)="getCandle('30', 24*60*60)"
+                        class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1W" class="p-button-rounded p-button-success"></button>
+                    <button pButton pRipple type="button" label="1W" (click)="getCandle('60', 7*24*60*60)"
+                        class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1M" class="p-button-rounded p-button-success"></button>
+                    <button pButton pRipple type="button" label="1M" (click)="getCandle('D', 30*24*60*60)"
+                        class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-1"></div>
             </div>
