@@ -22,6 +22,7 @@
     "@angular/router": "~12.2.0",
     "chart.js": "^3.5.1",
     "currency-flags": "^3.2.1",
+    "ng-keyboard-shortcuts": "^10.1.17",
     "primeflex": "^3.1.0",
     "primeicons": "^4.1.0",
     "primeng": "^12.2.1",

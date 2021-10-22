@@ -9,11 +9,11 @@ export class Symbol {
 }
 
 export class Candle {
-    c?: Number[];
-    h?: Number[];
-    l?: Number[];
-    o?: Number[];
+    c?: number[];
+    h?: number[];
+    l?: number[];
+    o?: number[];
     s?: string;
-    t?: Number[];
-    v?: Number[];
+    t?: number[];
+    v?: number[];
 }

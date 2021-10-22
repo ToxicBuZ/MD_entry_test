@@ -18,7 +18,7 @@ export class ForexService {
 
     public getAllExchanges(): Observable<string[]> {
         return this.http
-            .get<Array<any>>(`${route}/forex/exchange?token=${apiKey}`).pipe(
+            .get<Array<string>>(`${route}/forex/exchange?token=${apiKey}`).pipe(
                 catchError(error => {
                     console.error(error);
                     return of([]);
@@ -35,9 +35,6 @@ export class ForexService {
                 })
             );
     }
-
-    // "https://finnhub.io/api/v1/forex/candle?symbol=OANDA:EUR_USD&resolution=D&from=1572651390&to=1575243390&token=c5nhndaad3ib3rav8srg"
-
 
     public getTheCandle(symbol: any, resolution: string, timeframe: number): Observable<Candle> {
         const dateTo = Math.floor(Date.now() / 1000);

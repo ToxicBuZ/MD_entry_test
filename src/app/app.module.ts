@@ -9,6 +9,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
+import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { HttpClientModule } from '@angular/common/http';
     DropdownModule,
     ChartModule,
     ButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    KeyboardShortcutsModule.forRoot() 
   ],
   exports: [
     HttpClientModule
