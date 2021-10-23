@@ -1,6 +1,4 @@
 <ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
-
-
 <div class="col-10 col-offset-1">
     <div class="col-12 grid">
         <div class="col-8">
@@ -13,37 +11,47 @@
             <div class="col">
                 <h5>Exchange</h5>
                 <p-dropdown [options]="exchanges" [(ngModel)]="selectedExchange" placeholder="Select exchanges"
-                    (onChange)="getSymbols($event.value?.name)" optionLabel="name" [showClear]="true">
+                    (onChange)="getSymbols($event.value?.name); selectedSymbol={}; updateChart(); showPrice = false; displayFlags(false);"
+                    optionLabel="name" [showClear]="true">
                 </p-dropdown>
             </div>
             <div class="col">
                 <h5>Symbol</h5>
                 <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbols"
-                    optionLabel="displaySymbol" [showClear]="true"></p-dropdown>
+                    (onChange)="updateChart(); displayFlags(true); showPrice = false;" optionLabel="displaySymbol"
+                    [showClear]="true" emptyMessage="Please select Exchange first !"></p-dropdown>
             </div>
         </div>
         <div class="col-8 xs:col:12 sm:col-12 md:col-12 lg:col-8 xl:col-8">
-            <div class="col-12 grid">
+            <div class="col-12 grid justify-content-between">
                 <div class="col-4 formgrid">
                     <div class="col grid">
                         <div class="col-3 pr-3">
-                            <div class="currency-flag currency-flag-xl currency-flag-usd"></div>
+                            <div class="flagBorder currency-flag currency-flag-xl currency-flag-{{currencyFrom}}"
+                                *ngIf="currencyFrom !== '' "></div>
                         </div>
                         <div class="col-3 pr-3">
-                            <div class="currency-flag currency-flag-xl currency-flag-eur"></div>
+                            <div class="flagBorder currency-flag currency-flag-xl currency-flag-{{currencyTo}}"
+                                *ngIf="currencyTo !== '' "></div>
                         </div>
                     </div>
                     <div class="col grid">
-                        <h3>{{ this.selectedExchange?.name }}</h3>
+                        <h3>{{ selectedExchange?.name }}</h3>
                     </div>
                 </div>
-                <div class="col-4"></div>
-                <div class="col-4 formgrid">
-                    <div class="col grid justify-content-end">
-                        <h3>{{ this.currentPrice }}</h3>
+                <div class="col-4 grid justify-content-center">
+                    <div class="p-col" *ngIf="showSpinner && callChecker">
+                        <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
                     </div>
-                    <div class="col grid justify-content-end">
-                        <h3>{{ this.priceDifference }}%</h3>
+                </div>
+                <div class="col-4 formgrid">
+                    <div class="col grid justify-content-end" *ngIf="showPrice">
+                        <h3 class="currentPrice"> {{ currencyFrom }} {{ currentPrice }}</h3>
+                    </div>
+                    <div class="col grid justify-content-end" *ngIf="showPrice">
+                        <h3
+                            [ngClass]="{'priceDifferencePositive': isDifferencePositive, 'priceDifferenceNegative': !isDifferencePositive}">
+                            <span *ngIf="isDifferencePositive">+</span>{{ priceDifference }}%</h3>
                     </div>
                 </div>
             </div>
@@ -53,23 +61,33 @@
             <div class="col-12 grid">
                 <div class="col-1"></div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="15M" (click)="getCandle('1', 15*60, '15M')"
+                    <button pButton pRipple type="button" label="15M"
+                        (click)="getCandle('1', 15*60, '15M'); tabIndex = -1"
+                        [ngClass]="{'buttonTabbingBorder': tabIndex===0 }"
                         class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1H" (click)="getCandle('1', 60*60, '1H')"
+                    <button pButton pRipple type="button" label="1H"
+                        (click)="getCandle('1', 60*60, '1H'); tabIndex = -1"
+                        [ngClass]="{'buttonTabbingBorder': tabIndex===1 }"
                         class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1D" (click)="getCandle('30', 24*60*60, '1D')"
+                    <button pButton pRipple type="button" label="1D"
+                        (click)="getCandle('30', 24*60*60, '1D'); tabIndex = -1"
+                        [ngClass]="{'buttonTabbingBorder': tabIndex===2 }"
                         class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1W" (click)="getCandle('D', 7*24*60*60, '1W')"
+                    <button pButton pRipple type="button" label="1W"
+                        (click)="getCandle('D', 7*24*60*60, '1W'); tabIndex = -1"
+                        [ngClass]="{'buttonTabbingBorder': tabIndex===3 }"
                         class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-2">
-                    <button pButton pRipple type="button" label="1M" (click)="getCandle('D', 30*24*60*60, '1M')"
+                    <button pButton pRipple type="button" label="1M"
+                        (click)="getCandle('D', 30*24*60*60, '1M'); tabIndex = -1"
+                        [ngClass]="{'buttonTabbingBorder': tabIndex===4 }"
                         class="p-button-rounded p-button-success"></button>
                 </div>
                 <div class="col-1"></div>
@@ -77,3 +95,4 @@
         </div>
     </div>
 </div>
+<p-toast position="bottom-right"></p-toast>

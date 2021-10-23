@@ -10,6 +10,12 @@ import { ChartModule } from 'primeng/chart';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
+import { ToastModule } from 'primeng/toast';
+import { AlertService } from './forex/services/alert.service';
+import { MessageService } from 'primeng/api';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+
 
 @NgModule({
   declarations: [
@@ -20,17 +26,19 @@ import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    ProgressSpinnerModule,
     FormsModule,
     DropdownModule,
     ChartModule,
     ButtonModule,
     HttpClientModule,
-    KeyboardShortcutsModule.forRoot() 
+    ToastModule,
+    KeyboardShortcutsModule.forRoot()
   ],
   exports: [
     HttpClientModule
   ],
-  providers: [],
+  providers: [AlertService, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

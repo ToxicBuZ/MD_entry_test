@@ -1,14 +1,16 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Exchange, Symbol } from '../models/forex.model';
+import { Candle, Exchange, Symbol } from '../models/forex.model';
 import { ForexService } from '../services/forex.service';
-import { ShortcutInput, ShortcutEventOutput, KeyboardShortcutsComponent } from "ng-keyboard-shortcuts";  
+import { ShortcutInput} from "ng-keyboard-shortcuts";
+import { AlertService } from '../services/alert.service';
+
 
 @Component({
   selector: 'app-forex-application',
-  template: `<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>`,
   templateUrl: './forex-application.component.html',
-  styleUrls: ['./forex-application.component.scss']
+  styleUrls: ['./forex-application.component.scss'],
+
 })
 
 export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -21,13 +23,21 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   public symbols: Symbol[] = [];
   public selectedExchange: Exchange = {};
   public selectedSymbol: Symbol = {};
+  public currencyFrom: string = '';
+  public currencyTo: string = ''
   public closedPrices: number[] = [];
   public closedPricesTimestamps: number[] = [];
   public currentPrice: number = 0;
-  public priceDifference: any;
+  public priceDifference: string = '';
+  public showPrice: boolean = false;
+  public callChecker: boolean = false;
+  public showSpinner: boolean = true;
+  public isDifferencePositive: boolean = true;
+  public tabIndex: number = -1;
 
   constructor(
-    private forexService: ForexService
+    private forexService: ForexService,
+    private alertService: AlertService,
   ) {
   }
 
@@ -39,26 +49,45 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngAfterViewInit(): void {
-
-    // this.shortcuts.push(
-    //   {
-    //     key: "?",
-    //     label: "Help",
-    //     description: "Question mark",
-    //     command: () => console.log("question mark clicked"),
-    //     preventDefault: true
-    //   },
-    //   {
-    //     key: ["cmd + b"],
-    //     label: "Help",
-    //     description: "Cmd + b",
-    //     command: () => console.log('test'),
-    //     preventDefault: true
-    //   }
-    // );
+    this.shortcuts.push(
+      {
+        key: "tab",
+        label: "tabbing",
+        description: "taB",
+        command: () => {
+          this.tabIndex++;
+          switch (this.tabIndex) {
+            case 0: {
+              this.getCandle('1', 15 * 60, '15M');
+              break;
+            }
+            case 1: {
+              this.getCandle('1', 60 * 60, '1H');
+              break;
+            }
+            case 2: {
+              this.getCandle('30', 24 * 60 * 60, '1D');
+              break;
+            }
+            case 3: {
+              this.getCandle('D', 7 * 24 * 60 * 60, '1W');
+              break;
+            }
+            case 4: {
+              this.getCandle('D', 30 * 24 * 60 * 60, '1M');
+              break;
+            }
+            case 5: {
+              this.tabIndex = 0;
+              break;
+            }
+          }
+        },
+        preventDefault: true
+      }
+    );
 
   }
-  
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -66,33 +95,46 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
 
   public getSymbols(exchange: string): void {
     if (exchange) {
-      this.forexService.getSymbolsForExchange(exchange).subscribe(symbols => {
-        this.symbols = [...symbols];
+      this.forexService.getSymbolsForExchange(exchange).subscribe((symbols: Symbol[]) => {
+        this.symbols = symbols.filter(symbol => symbol.displaySymbol?.includes('/'));
       })
     }
   }
 
   public getCandle(resolution: string, timeframe: number, axisFlag: string): void {
-    this.forexService.getTheCandle(this.selectedSymbol, resolution, timeframe).subscribe(candle => {
-      console.log(candle)
-      this.closedPrices = candle.c!;
-      this.currentPrice = this.closedPrices[this.closedPrices.length - 1];
-      this.priceDifference = ((this.currentPrice - this.closedPrices[0]) * 100).toFixed(4);
-      this.closedPricesTimestamps = candle.t!;
-      this.updateChart(axisFlag, this.closedPricesTimestamps);
-    })
+    if (Object.keys(this.selectedExchange).length > 0 && Object.keys(this.selectedSymbol).length > 0) {
+      this.showSpinner = true;
+      this.callChecker = true;
+      this.forexService.getForexCandle(this.selectedSymbol, resolution, timeframe).subscribe(candle => {
+        if (candle && candle.s === 'ok') {
+          this.closedPrices = candle.c!;
+          this.currentPrice = this.closedPrices[this.closedPrices.length - 1];
+          this.priceDifference = ((this.currentPrice - this.closedPrices[0]) * 100).toFixed(4);
+          this.isDifferencePositive = !(this.priceDifference[0] === '-');
+          this.showPrice = true;
+          this.closedPricesTimestamps = candle.t!;
+          this.updateChart(axisFlag, this.closedPricesTimestamps);
+          this.alertService.showToaster('Success !')
+        } else {
+          this.alertService.showErrorToaster('No Data !')
+        }
+        this.showSpinner = false;
+      })
+    } else {
+      this.alertService.showWarningToaster('Please select Exchange and Symbol !')
+    }
   }
 
-  public updateChart(axisFlag: string, xAxisTimestamps: number[]): void {
+  public updateChart(axisFlag: string = '', xAxisTimestamps: number[] = []): void {
 
     const axisX = this.selectAxisX(axisFlag, xAxisTimestamps);
-    
+
     this.data = {
-      labels: axisX,
+      labels: axisX ?? [],
       datasets: [
         {
-          label: this.selectedSymbol.displaySymbol ?? '',
-          data: this.closedPrices,
+          label: this.selectedSymbol?.displaySymbol ?? '',
+          data: this.closedPrices ?? [],
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
           tension: 0.1
@@ -111,55 +153,43 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
     };
   }
 
-  private selectAxisX (flag: string, candleTimestamps: number[]): string[] {
 
+  public displayFlags(display: boolean): void {
+    this.currencyFrom = display ? this.selectedSymbol?.displaySymbol?.split('/')[0].toLowerCase()! : '';
+    this.currencyTo = display ? this.selectedSymbol?.displaySymbol?.split('/')[1].toLowerCase()! : '';
+  }
+
+  private selectAxisX(flag: string, candleTimestamps: number[]): string[] {
     let axisX: string[] = [];
 
-    if (flag === 'empty') {
-      axisX.push('0');
-      for (let index = 0; index < 14; index++) {
-        axisX.push('');
+    switch (flag) {
+      case 'empty': {
+        axisX.push('0');
+        for (let index = 0; index < 14; index++) {
+          axisX.push('');
+        }
+        axisX.push('T');
+        break;
       }
-      axisX.push('T');
+      case '15M':
+      case '1H':
+      case '1D': {
+        candleTimestamps.forEach(timestamp => {
+          const isoDate = new Date(timestamp * 1000).toISOString().split('T')[1].substr(0, 8);
+          axisX.push(isoDate);
+        });
+        break;
+      }
+      case '1W':
+      case '1M': {
+        candleTimestamps.forEach(timestamp => {
+          const isoDate = new Date(timestamp * 1000).toISOString().split('T')[0];
+          axisX.push(isoDate);
+        });
+        break;
+      }
     }
-
-    if (flag === '15M') {
-      candleTimestamps.forEach(timestamp => {
-        const isoDate = new Date(timestamp * 1000).toISOString().split('T')[1].substr(0, 8);
-        axisX.push(isoDate);
-      });
-    }
-
-    if (flag === '1H') {
-      candleTimestamps.forEach(timestamp => {
-        const isoDate = new Date(timestamp * 1000).toISOString().split('T')[1].substr(0, 8);
-        axisX.push(isoDate);
-      });
-    }
-
-    if (flag === '1D') {
-      candleTimestamps.forEach(timestamp => {
-        const isoDate = new Date(timestamp * 1000).toISOString().split('T')[1].substr(0, 8);
-        axisX.push(isoDate);
-      });
-    }
-
-    if (flag === '1W') {
-      candleTimestamps.forEach(timestamp => {
-        const isoDate = new Date(timestamp * 1000).toISOString().split('T')[0];
-        axisX.push(isoDate);
-      });
-    }
-
-    if (flag === '1M') {
-      candleTimestamps.forEach(timestamp => {
-        const isoDate = new Date(timestamp * 1000).toISOString().split('T')[0];
-        axisX.push(isoDate);
-      }); 
-    }
-
     return axisX;
-
   }
 
 }
