@@ -1,42 +1,54 @@
 <ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
 <div class="col-10 col-offset-1">
-    <div class="col-12 grid">
-        <div class="col-8">
-            <h1>Forex Exchange</h1>
-            <h3 class="secondary">Checkout the current price on different exchanges for a currency pair</h3>
+    <div class="col-12 grid p-0">
+        <div class="col-8 p-0">
+            <h2>Forex Exchange</h2>
+            <span class="secondary">
+                <label><strong>Checkout the current price on different exchanges for a currency pair</strong></label>
+            </span>
         </div>
     </div>
-    <div class="col-12 grid">
-        <div class="col-4 xs:col:12 sm:col-12 md:col-12 lg:col-4 xl:col-4 formgrid">
-            <div class="col">
-                <h5>Exchange</h5>
-                <p-dropdown [options]="exchanges" [(ngModel)]="selectedExchange" placeholder="Select exchanges"
-                    (onChange)="getSymbols($event.value?.name); selectedSymbol={}; updateChart(); showPrice = false; displayFlags(false);"
-                    optionLabel="name" [showClear]="true">
-                </p-dropdown>
+    <div class="col-12 grid pt-4 pl-0">
+        <div class="col xs:col:12 sm:col-12 md:col-12 lg:col-4 xl:col-4 p-0">
+            <div class="col formgrid  p-0">
+                <div class="col p-0">
+                    <span>
+                        <label><strong>Exchange</strong></label>
+                    </span>
+                </div>
+                <div class="col p-0">
+                    <p-dropdown [options]="exchanges" [(ngModel)]="selectedExchange" placeholder="Select exchanges"
+                        (onChange)="getSymbols($event.value?.name); selectedSymbol={}; updateChart(); showPrice = false; displayFlags(false);"
+                        optionLabel="name" [showClear]="true">
+                    </p-dropdown>
+                </div>
             </div>
-            <div class="col">
-                <h5>Symbol</h5>
-                <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbols"
-                    (onChange)="updateChart(); displayFlags(true); showPrice = false;" optionLabel="displaySymbol"
-                    [showClear]="true" emptyMessage="Please select Exchange first !"></p-dropdown>
+            <div class="col formgrid pl-0 pt-4">
+                <div class="col p-0">
+                    <span>
+                        <label><strong>Symbol</strong></label>
+                    </span>
+                </div>
+                <div class="col p-0">
+                    <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbols"
+                        (onChange)="updateChart(); displayFlags(true); showPrice = false;" optionLabel="displaySymbol"
+                        [showClear]="true" emptyMessage="Please select Exchange first !"></p-dropdown>
+                </div>
             </div>
         </div>
-        <div class="col-8 xs:col:12 sm:col-12 md:col-12 lg:col-8 xl:col-8">
-            <div class="col-12 grid justify-content-between">
+        <div class="col xs:col:12 sm:col-12 md:col-12 lg:col-8 xl:col-8 p-0">
+            <div class="col-12 grid justify-content-between pl-0">
                 <div class="col-4 formgrid">
-                    <div class="col grid">
-                        <div class="col-3 pr-3">
+                    <div class="col grid pl-0">
+                        <div class="col pr-0">
                             <div class="flagBorder currency-flag currency-flag-xl currency-flag-{{currencyFrom}}"
                                 *ngIf="currencyFrom !== '' "></div>
-                        </div>
-                        <div class="col-3 pr-3">
                             <div class="flagBorder currency-flag currency-flag-xl currency-flag-{{currencyTo}}"
                                 *ngIf="currencyTo !== '' "></div>
                         </div>
                     </div>
-                    <div class="col grid">
-                        <h3>{{ selectedExchange?.name }}</h3>
+                    <div class="col pb-0 grid">
+                        <h3>{{ selectedExchange?.name?.toUpperCase() }}</h3>
                     </div>
                 </div>
                 <div class="col-4 grid justify-content-center">
@@ -45,21 +57,22 @@
                     </div>
                 </div>
                 <div class="col-4 formgrid">
-                    <div class="col grid justify-content-end" *ngIf="showPrice">
-                        <h3 class="currentPrice"> {{ currencyFrom }} {{ currentPrice }}</h3>
+                    <div class="col grid justify-content-end pt-0" *ngIf="showPrice">
+                        <h3 class="currentPrice"> {{ currencyFrom.toUpperCase() }} {{ currentPrice }}</h3>
                     </div>
-                    <div class="col grid justify-content-end" *ngIf="showPrice">
+                    <div class="col grid justify-content-end pt-0" *ngIf="showPrice">
                         <h3
                             [ngClass]="{'priceDifferencePositive': isDifferencePositive, 'priceDifferenceNegative': !isDifferencePositive}">
-                            <span *ngIf="isDifferencePositive">+</span>{{ priceDifference }}%</h3>
+                            <span *ngIf="isDifferencePositive">+</span>{{ priceDifference }}%
+                        </h3>
                     </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-12 pl-0">
                 <p-chart type="line" [data]="data" [options]="options" style="width:fit-content;"></p-chart>
             </div>
-            <div class="col-12 grid">
-                <div class="col-1"></div>
+            <div class="col-12 grid pl-0 pr-0">
+                <div class="col-1 pr-0 pl-0"></div>
                 <div class="col-2">
                     <button pButton pRipple type="button" label="15M"
                         (click)="getCandle('1', 15*60, '15M'); tabIndex = -1"
@@ -90,7 +103,7 @@
                         [ngClass]="{'buttonTabbingBorder': tabIndex===4 }"
                         class="p-button-rounded p-button-success"></button>
                 </div>
-                <div class="col-1"></div>
+                <div class="col-1 pl-0 pr-0"></div>
             </div>
         </div>
     </div>
