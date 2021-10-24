@@ -57,7 +57,9 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
         command: () => {
           this.tabIndex++;
           switch (this.tabIndex) {
+            case 5 :
             case 0: {
+              this.tabIndex = 0;
               this.getCandle('1', 15 * 60, '15M');
               break;
             }
@@ -75,10 +77,6 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
             }
             case 4: {
               this.getCandle('D', 30 * 24 * 60 * 60, '1M');
-              break;
-            }
-            case 5: {
-              this.tabIndex = 0;
               break;
             }
           }
