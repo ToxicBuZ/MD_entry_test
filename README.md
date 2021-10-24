@@ -4,15 +4,16 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Use the project
 
-Clone this repo: git clone https://github.com/ToxicBuZ/MD_entry_test.
-Change directory to this project.
-Run npm install to install all the dependencies.
-Run ng serve to run this project.
-Navigate to http://localhost:4200/. The app will automatically reload by changing source files.
+* Clone this repo: git clone https://github.com/ToxicBuZ/MD_entry_test.
+* Change directory to this project.
+* Run npm install to install all the dependencies.
+
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* Run `ng serve` for a dev server. 
+* Navigate to `http://localhost:4200/`. 
+* The app will automatically reload if you change any of the source files.
 
 ## Running unit tests
 
