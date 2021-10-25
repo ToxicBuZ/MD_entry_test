@@ -30,9 +30,10 @@
                     </span>
                 </div>
                 <div class="col p-0">
-                    <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbols"
-                        (onChange)="updateChart(); displayFlags(true); showPrice = false;" optionLabel="displaySymbol"
-                        [showClear]="true" emptyMessage="Please select Exchange first !"></p-dropdown>
+                    <p-dropdown [options]="symbols" [(ngModel)]="selectedSymbol" placeholder="Select symbol"
+                        (onChange)="updateChart(); displayFlags(true); showPrice = false;"
+                        (onClear)="selectedSymbol = {}" optionLabel="displaySymbol" [showClear]="true"
+                        emptyMessage="Please select Exchange first !"></p-dropdown>
                 </div>
             </div>
         </div>
@@ -42,9 +43,9 @@
                     <div class="col grid pl-0">
                         <div class="col pr-0">
                             <div class="flagBorder currency-flag currency-flag-xl currency-flag-{{currencyFrom}}"
-                                *ngIf="currencyFrom !== '' "></div>
+                                *ngIf="currencyFrom !== '' && this.selectedSymbol?.displaySymbol "></div>
                             <div class="flagBorder currency-flag currency-flag-xl currency-flag-{{currencyTo}}"
-                                *ngIf="currencyTo !== '' "></div>
+                                *ngIf="currencyTo !== '' && this.selectedSymbol?.displaySymbol"></div>
                         </div>
                     </div>
                     <div class="col pb-0 grid">
