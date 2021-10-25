@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-4 formgrid">
                     <div class="col grid justify-content-end pt-0" *ngIf="showPrice">
-                        <h3 class="currentPrice"> {{ currencyFrom.toUpperCase() }} {{ currentPrice }}</h3>
+                        <h3 class="currentPrice"> {{ currencyFromSymbol }} {{ currentPrice }}</h3>
                     </div>
                     <div class="col grid justify-content-end pt-0" *ngIf="showPrice">
                         <h3
@@ -69,7 +69,7 @@
                 </div>
             </div>
             <div class="col-12 pl-0">
-                <p-chart type="line" [data]="data" [options]="options" style="width:fit-content;"></p-chart>
+                <p-chart type="line" [data]="data" style="width:fit-content;"></p-chart>
             </div>
             <div class="col-12 grid pl-0 pr-0">
                 <div class="col-1 pr-0 pl-0"></div>

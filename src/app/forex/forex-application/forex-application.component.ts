@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Candle, Exchange, Symbol } from '../models/forex.model';
+import { Exchange, Symbol } from '../models/forex.model';
 import { ForexService } from '../services/forex.service';
-import { ShortcutInput} from "ng-keyboard-shortcuts";
+import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { AlertService } from '../services/alert.service';
-
+import getSymbolFromCurrency from 'currency-symbol-map'
 
 @Component({
   selector: 'app-forex-application',
@@ -16,24 +16,24 @@ import { AlertService } from '../services/alert.service';
 export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public subscription: Subscription = new Subscription();
-  public shortcuts: ShortcutInput[] = [];
-  public data = {};
-  public options = {};
-  public exchanges: Exchange[] = [];
-  public symbols: Symbol[] = [];
   public selectedExchange: Exchange = {};
   public selectedSymbol: Symbol = {};
-  public currencyFrom: string = '';
-  public currencyTo: string = ''
+  public shortcuts: ShortcutInput[] = [];
+  public exchanges: Exchange[] = [];
+  public symbols: Symbol[] = [];
   public closedPrices: number[] = [];
   public closedPricesTimestamps: number[] = [];
-  public currentPrice: number = 0;
-  public priceDifference: string = '';
-  public showPrice: boolean = false;
-  public callChecker: boolean = false;
-  public showSpinner: boolean = true;
-  public isDifferencePositive: boolean = true;
-  public tabIndex: number = -1;
+  public data = {};
+  public currencyFrom = '';
+  public currencyFromSymbol = '';
+  public currencyTo = ''
+  public currentPrice= '';
+  public priceDifference = '';
+  public showPrice = false;
+  public callChecker = false;
+  public showSpinner = true;
+  public isDifferencePositive = true;
+  public tabIndex = -1;
 
   constructor(
     private forexService: ForexService,
@@ -45,19 +45,18 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
     this.updateChart('empty', []);
     this.subscription.add(this.forexService.getAllExchanges().subscribe((exchanges) => {
       this.exchanges = exchanges.map(exchange => ({ name: exchange }));
-    }))
+    }));
   }
 
   ngAfterViewInit(): void {
-    this.shortcuts.push(
-      {
+    this.shortcuts.push({
         key: "tab",
         label: "tabbing",
         description: "taB",
         command: () => {
           this.tabIndex++;
           switch (this.tabIndex) {
-            case 5 :
+            case 5:
             case 0: {
               this.tabIndex = 0;
               this.getCandle('1', 15 * 60, '15M');
@@ -82,9 +81,7 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
           }
         },
         preventDefault: true
-      }
-    );
-
+      });
   }
 
   ngOnDestroy(): void {
@@ -99,6 +96,12 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
     }
   }
 
+  public displayFlags(display: boolean): void {
+    this.currencyFrom = display ? this.selectedSymbol?.displaySymbol?.split('/')[0].toLowerCase()! : '';
+    this.currencyFromSymbol = display ? getSymbolFromCurrency(this.selectedSymbol?.displaySymbol?.split('/')[0].toLowerCase()!)! : '';
+    this.currencyTo = display ? this.selectedSymbol?.displaySymbol?.split('/')[1].toLowerCase()! : '';
+  }
+
   public getCandle(resolution: string, timeframe: number, axisFlag: string): void {
     if (Object.keys(this.selectedExchange).length > 0 && Object.keys(this.selectedSymbol).length > 0) {
       this.showSpinner = true;
@@ -106,15 +109,15 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
       this.forexService.getForexCandle(this.selectedSymbol, resolution, timeframe).subscribe(candle => {
         if (candle && candle.s === 'ok') {
           this.closedPrices = candle.c!;
-          this.currentPrice = this.closedPrices[this.closedPrices.length - 1];
-          this.priceDifference = ((this.currentPrice - this.closedPrices[0]) * 100).toFixed(4);
+          this.currentPrice = this.closedPrices[this.closedPrices.length - 1].toFixed(2);
+          this.priceDifference = ((Number(this.currentPrice) - this.closedPrices[0]) * 100).toFixed(2);
           this.isDifferencePositive = !(this.priceDifference[0] === '-');
           this.showPrice = true;
           this.closedPricesTimestamps = candle.t!;
           this.updateChart(axisFlag, this.closedPricesTimestamps);
-          this.alertService.showToaster('Success !')
+          this.alertService.showToaster('Request successful !')
         } else {
-          this.alertService.showErrorToaster('No Data !')
+          this.alertService.showErrorToaster('Request failed, check console !')
         }
         this.showSpinner = false;
       })
@@ -124,42 +127,23 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   public updateChart(axisFlag: string = '', xAxisTimestamps: number[] = []): void {
-
     const axisX = this.selectAxisX(axisFlag, xAxisTimestamps);
-
     this.data = {
       labels: axisX ?? [],
       datasets: [
         {
           label: this.selectedSymbol?.displaySymbol ?? '',
           data: this.closedPrices ?? [],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
+          fill: true,
+          borderColor: 'rgb(75, 192, 0)',
           tension: 0.1
         }
       ]
     };
-    this.options = {
-      title: {
-        display: true,
-        text: 'My Title',
-        fontSize: 16
-      },
-      legend: {
-        position: 'bottom'
-      }
-    };
-  }
-
-
-  public displayFlags(display: boolean): void {
-    this.currencyFrom = display ? this.selectedSymbol?.displaySymbol?.split('/')[0].toLowerCase()! : '';
-    this.currencyTo = display ? this.selectedSymbol?.displaySymbol?.split('/')[1].toLowerCase()! : '';
   }
 
   private selectAxisX(flag: string, candleTimestamps: number[]): string[] {
     let axisX: string[] = [];
-
     switch (flag) {
       case 'empty': {
         axisX.push('0');

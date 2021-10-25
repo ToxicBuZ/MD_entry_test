@@ -1,7 +1,6 @@
 import { ForexApplicationComponent } from './forex-application.component';
-import { Candle, Exchange, Symbol } from '../models/forex.model';
+import { Candle, Symbol } from '../models/forex.model';
 import { of } from 'rxjs';
-
 
 describe('ForexApplicationComponent', () => {
     let component: ForexApplicationComponent;
@@ -12,7 +11,6 @@ describe('ForexApplicationComponent', () => {
         { description: 'FXPRO Euro vs Russian Ruble EURRUB', displaySymbol: 'EUR/RUB', symbol: 'FXPRO:1083' },
         { description: 'FXPRO FTSE 100 Spot Index #UK100', displaySymbol: 'UK100/GBP', symbol: 'FXPRO:1105' }
     ];
-
     const mockCandleForOandaEurCad: Candle = {
         c: [1.43856, 1.43944, 1.43852, 1.43901, 1.43976, 1.43996, 1.43981, 1.4393],
         h: [1.43936, 1.4395, 1.43953, 1.43924, 1.43991, 1.44032, 1.44007, 1.44055],
@@ -22,11 +20,8 @@ describe('ForexApplicationComponent', () => {
         t: [1634922000, 1634923800, 1634925600, 1634927400, 1634929200, 1634931000, 1634932800, 1634934600],
         v: [1835, 1714, 1586, 1595, 1265, 1100, 1086, 1143]
     }
-
     mockForexService.getSymbolsForExchange.and.returnValue(of(mockSymbolsForFxpro));
     mockForexService.getForexCandle.and.returnValue(of(mockCandleForOandaEurCad));
-
-
 
     beforeEach(() => {
         component = new ForexApplicationComponent(mockForexService, mockAlertService);

@@ -3,7 +3,7 @@ export const environment = {
   debugAnalytics: true,
   finnhub: {
     baseUrl: 'https://finnhub.io/api/v1',
-    apiKey: 'c5nhndaad3ib3rav8srg'
+    apiKey: 'sandbox_c5nhndaad3ib3rav8ss0'
   }
   
 };

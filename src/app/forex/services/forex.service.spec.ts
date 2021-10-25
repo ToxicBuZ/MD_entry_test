@@ -1,6 +1,5 @@
 import { ForexService } from './forex.service';
 
-
 describe('ForexService', () => {
   let service: ForexService;
   const mockHttpService = jasmine.createSpyObj('mockHttpService', ['']);
