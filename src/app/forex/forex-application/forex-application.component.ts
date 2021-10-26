@@ -4,7 +4,7 @@ import { Exchange, Symbol } from '../models/forex.model';
 import { ForexService } from '../services/forex.service';
 import { ShortcutInput } from "ng-keyboard-shortcuts";
 import { AlertService } from '../services/alert.service';
-import getSymbolFromCurrency from 'currency-symbol-map'
+import getSymbolFromCurrency from 'currency-symbol-map';
 
 @Component({
   selector: 'app-forex-application',
@@ -29,6 +29,7 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   public currencyTo = ''
   public currentPrice = '';
   public priceDifference = '';
+  public priceDifferencePercentage = '';
   public showPrice = false;
   public callChecker = false;
   public showSpinner = true;
@@ -110,19 +111,20 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
         if (candle && candle.s === 'ok') {
           this.closedPrices = candle.c!;
           this.currentPrice = this.closedPrices[this.closedPrices.length - 1].toFixed(2);
-          this.priceDifference = ((Number(this.currentPrice) - this.closedPrices[0]) * 100).toFixed(2);
+          this.priceDifference = (Number(this.closedPrices[0]) - (Number(this.currentPrice))).toFixed(2);
+          this.priceDifferencePercentage = (Number(this.priceDifference) / Number(this.currentPrice) * 100).toFixed(2);
           this.isDifferencePositive = !(this.priceDifference[0] === '-');
           this.showPrice = true;
           this.closedPricesTimestamps = candle.t!;
           this.updateChart(axisFlag, this.closedPricesTimestamps);
-          this.alertService.showToaster('Request successful !')
+          this.alertService.showToaster('Request successful !');
         } else {
-          this.alertService.showErrorToaster('Request failed, check console !')
+          this.alertService.showErrorToaster('Request failed, check console !');
         }
         this.showSpinner = false;
       })
     } else {
-      this.alertService.showWarningToaster('Please select Exchange and Symbol !')
+      this.alertService.showWarningToaster('Please select Exchange and Symbol !');
     }
   }
 

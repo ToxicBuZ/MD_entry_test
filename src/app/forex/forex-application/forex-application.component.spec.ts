@@ -19,7 +19,7 @@ describe('ForexApplicationComponent', () => {
         s: "ok",
         t: [1634922000, 1634923800, 1634925600, 1634927400, 1634929200, 1634931000, 1634932800, 1634934600],
         v: [1835, 1714, 1586, 1595, 1265, 1100, 1086, 1143]
-    }
+    };
 
     beforeEach(() => {
         component = new ForexApplicationComponent(mockForexService, mockAlertService);
@@ -95,7 +95,5 @@ describe('ForexApplicationComponent', () => {
         expect(component.currencyFromSymbol).toEqual('€');
         expect(component.currencyTo).toEqual('cad');
     });
-
-
 
 });

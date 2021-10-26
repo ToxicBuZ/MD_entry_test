@@ -64,7 +64,8 @@
                     <div class="col grid justify-content-end pt-0" *ngIf="showPrice">
                         <h3
                             [ngClass]="{'priceDifferencePositive': isDifferencePositive, 'priceDifferenceNegative': !isDifferencePositive}">
-                            <span *ngIf="isDifferencePositive">+</span>{{ priceDifference }}%
+                            <span *ngIf="isDifferencePositive">+</span>{{ priceDifference }}
+                            ({{priceDifferencePercentage}}%)
                         </h3>
                     </div>
                 </div>
