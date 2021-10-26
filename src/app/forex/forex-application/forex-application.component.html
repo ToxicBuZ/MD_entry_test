@@ -2,10 +2,10 @@
 <div class="col-10 col-offset-1">
     <div class="col-12 grid p-0">
         <div class="col-8 p-0">
-            <h2>Forex Exchange</h2>
-            <span class="secondary">
-                <label><strong>Checkout the current price on different exchanges for a currency pair</strong></label>
-            </span>
+            <h1 style="margin-bottom: 0rem;">Forex Exchange</h1>
+            <div class="secondary pt-0">
+                <strong>Checkout the current price on different exchanges for a currency pair</strong>
+            </div>
         </div>
     </div>
     <div class="col-12 grid pt-4 pl-0">
@@ -19,7 +19,7 @@
                 <div class="col p-0">
                     <p-dropdown [options]="exchanges" [(ngModel)]="selectedExchange" placeholder="Select exchanges"
                         (onChange)="getSymbols($event.value?.name); selectedSymbol={}; updateChart(); showPrice = false; displayFlags(false);"
-                        optionLabel="name" [showClear]="true">
+                        (onClear)="selectedExchange = {}" optionLabel="name" [showClear]="true">
                     </p-dropdown>
                 </div>
             </div>

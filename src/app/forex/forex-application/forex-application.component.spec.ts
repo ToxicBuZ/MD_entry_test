@@ -20,11 +20,11 @@ describe('ForexApplicationComponent', () => {
         t: [1634922000, 1634923800, 1634925600, 1634927400, 1634929200, 1634931000, 1634932800, 1634934600],
         v: [1835, 1714, 1586, 1595, 1265, 1100, 1086, 1143]
     }
-    mockForexService.getSymbolsForExchange.and.returnValue(of(mockSymbolsForFxpro));
-    mockForexService.getForexCandle.and.returnValue(of(mockCandleForOandaEurCad));
 
     beforeEach(() => {
         component = new ForexApplicationComponent(mockForexService, mockAlertService);
+        mockForexService.getSymbolsForExchange.and.returnValue(of(mockSymbolsForFxpro));
+        mockForexService.getForexCandle.and.returnValue(of(mockCandleForOandaEurCad));
     });
 
     it('should create', () => {
@@ -43,7 +43,7 @@ describe('ForexApplicationComponent', () => {
 
     it('should call showWarningToaster if no Symbol is selected', () => {
         component.selectedExchange = { name: 'oanda' };
-        component.getCandle('60', 86400*7, '1W');
+        component.getCandle('60', 86400 * 7, '1W');
         expect(mockAlertService.showWarningToaster).toHaveBeenCalled();
     });
 
@@ -57,6 +57,45 @@ describe('ForexApplicationComponent', () => {
         component.getCandle('D', 86400, '1D');
         expect(mockAlertService.showToaster).toHaveBeenCalled();
     });
+
+    it('should call showErrorToaster if the candle status is not ok', () => {
+        mockForexService.getForexCandle.and.returnValue(of(new Candle()));
+        component.selectedExchange = { name: 'oanda' };
+        component.selectedSymbol = {
+            description: "Oanda EUR/CAD",
+            displaySymbol: "EUR/CAD",
+            symbol: "OANDA:EUR_CAD"
+        };
+        component.getCandle('D', 86400, '1D');
+        expect(mockAlertService.showErrorToaster).toHaveBeenCalled();
+    });
+
+    it('currencyFrom, currencyFromSymbol, currencyTo should be empty strings if display is false', () => {
+        component.selectedExchange = { name: 'oanda' };
+        component.selectedSymbol = {
+            description: "Oanda EUR/CAD",
+            displaySymbol: "EUR/CAD",
+            symbol: "OANDA:EUR_CAD"
+        };
+        component.displayFlags(false);
+        expect(component.currencyFrom).toEqual('');
+        expect(component.currencyFromSymbol).toEqual('');
+        expect(component.currencyTo).toEqual('');
+    });
+
+    it('currencyFrom, currencyFromSymbol, currencyTo should not be empty strings if display is true', () => {
+        component.selectedExchange = { name: 'oanda' };
+        component.selectedSymbol = {
+            description: "Oanda EUR/CAD",
+            displaySymbol: "EUR/CAD",
+            symbol: "OANDA:EUR_CAD"
+        };
+        component.displayFlags(true);
+        expect(component.currencyFrom).toEqual('eur');
+        expect(component.currencyFromSymbol).toEqual('€');
+        expect(component.currencyTo).toEqual('cad');
+    });
+
 
 
 });

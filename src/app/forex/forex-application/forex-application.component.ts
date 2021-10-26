@@ -27,7 +27,7 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   public currencyFrom = '';
   public currencyFromSymbol = '';
   public currencyTo = ''
-  public currentPrice= '';
+  public currentPrice = '';
   public priceDifference = '';
   public showPrice = false;
   public callChecker = false;
@@ -44,44 +44,44 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit(): void {
     this.updateChart('empty', []);
     this.subscription.add(this.forexService.getAllExchanges().subscribe((exchanges) => {
-      this.exchanges = exchanges.map(exchange => ({ name: exchange }));
+      this.exchanges = exchanges.map(exchange => ({ name: exchange })).sort((a, b) => a.name!.localeCompare(b.name!));;
     }));
   }
 
   ngAfterViewInit(): void {
     this.shortcuts.push({
-        key: "tab",
-        label: "tabbing",
-        description: "taB",
-        command: () => {
-          this.tabIndex++;
-          switch (this.tabIndex) {
-            case 5:
-            case 0: {
-              this.tabIndex = 0;
-              this.getCandle('1', 15 * 60, '15M');
-              break;
-            }
-            case 1: {
-              this.getCandle('1', 60 * 60, '1H');
-              break;
-            }
-            case 2: {
-              this.getCandle('30', 24 * 60 * 60, '1D');
-              break;
-            }
-            case 3: {
-              this.getCandle('D', 7 * 24 * 60 * 60, '1W');
-              break;
-            }
-            case 4: {
-              this.getCandle('D', 30 * 24 * 60 * 60, '1M');
-              break;
-            }
+      key: "tab",
+      label: "tabbing",
+      description: "taB",
+      command: () => {
+        this.tabIndex++;
+        switch (this.tabIndex) {
+          case 5:
+          case 0: {
+            this.tabIndex = 0;
+            this.getCandle('1', 15 * 60, '15M');
+            break;
           }
-        },
-        preventDefault: true
-      });
+          case 1: {
+            this.getCandle('1', 60 * 60, '1H');
+            break;
+          }
+          case 2: {
+            this.getCandle('30', 24 * 60 * 60, '1D');
+            break;
+          }
+          case 3: {
+            this.getCandle('D', 7 * 24 * 60 * 60, '1W');
+            break;
+          }
+          case 4: {
+            this.getCandle('D', 30 * 24 * 60 * 60, '1M');
+            break;
+          }
+        }
+      },
+      preventDefault: true
+    });
   }
 
   ngOnDestroy(): void {
@@ -91,7 +91,7 @@ export class ForexApplicationComponent implements OnInit, AfterViewInit, OnDestr
   public getSymbols(exchange: string): void {
     if (exchange) {
       this.forexService.getSymbolsForExchange(exchange).subscribe((symbols: Symbol[]) => {
-        this.symbols = symbols.filter(symbol => symbol.displaySymbol?.includes('/'));
+        this.symbols = symbols.filter(symbol => symbol.displaySymbol?.includes('/')).sort((a, b) => a.displaySymbol!.localeCompare(b.displaySymbol!));
       })
     }
   }
