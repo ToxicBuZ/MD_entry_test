@@ -1,0 +1,20 @@
+Build a responsive web application which shows the historical and current rate for an FX pair. 
+Although it is suggested to utilise Vue as the Javascript framework, this is not compulsory.
+
+The app must:
+Utilise the data from https://finnhub.io/ to display:
+
+* A dropdown of exchanges
+* A dropdown containing the symbols under that exchange. This should change upon modifying the exchange
+* A chart showing the current selected symbol (currency pair). The chart should show
+* The flags of the current pair. Use the flags from https://github.com/transferwise/currency-flags
+*The exchange
+* The symbol for the current currency pair
+* The current price
+* The difference between the starting price and the ending price of the current time selection
+* A chart displaying the historical close prices. Any Charting library of your choice can be utilised.
+* Tabbing functionality which changes the chart plot. On change the difference between the starting and ending price needs to be recalculated.
+
+It would be nice to have 
+* A responsive mobile design
+* Live pricing using socket communication
