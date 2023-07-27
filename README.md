@@ -1,10 +1,10 @@
-# MD-MT_Entry_Test
+# Forex-App
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.10.
 
 ## Use the project
 
-* Clone this repo: git clone https://github.com/ToxicBuZ/MD_entry_test.
+* Clone this repo: git clone https://github.com/ToxicBuZ/forex-app.
 * Change directory to this project.
 * Run npm install to install all the dependencies.
 
